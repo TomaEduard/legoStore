@@ -1,4 +1,4 @@
-package persistence;
+package com.example.demo.persistence;
 
 import com.example.demo.model.DeliveryInfo;
 import com.example.demo.model.LegoSet;
