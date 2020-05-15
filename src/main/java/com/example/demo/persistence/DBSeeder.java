@@ -5,16 +5,28 @@ import com.example.demo.model.LegoSet;
 import com.example.demo.model.LegoSetDifficulty;
 import com.example.demo.model.ProductReview;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collection;
 
 @Service
 public class DBSeeder implements CommandLineRunner {
 
+    private MongoTemplate mongoTemplate;
+
+    public DBSeeder(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
+    }
+
     @Override
     public void run(String... args) throws Exception {
+
+        // clean de db
+        this.mongoTemplate.dropCollection(LegoSet.class);
+
 
         LegoSet milleniumFalcom = new LegoSet(
                 "Millenium Falcon",
@@ -49,5 +61,8 @@ public class DBSeeder implements CommandLineRunner {
                         new ProductReview("Andrew", 9)
                 )
         );
+
+        Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcom, skyPolice, mcLarenSenna);
+        this.mongoTemplate.insertAll(initialProducts);
     }
 }

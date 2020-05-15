@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Document(collation = "legosets")
+@Document(collection = "legosets")
 public class LegoSet {
 
     @Id
