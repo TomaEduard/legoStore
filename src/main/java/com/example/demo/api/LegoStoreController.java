@@ -1,7 +1,9 @@
 package com.example.demo.api;
 
 import com.example.demo.model.LegoSet;
+import com.example.demo.model.LegoSetDifficulty;
 import com.example.demo.persistence.LegoSetRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -32,8 +34,8 @@ public class LegoStoreController {
 
     @GetMapping("/all")
     public Collection<LegoSet> all(){
-        List<LegoSet> legosets = this.legoSetRepository.findAll();
-
+        Sort sortByThemAsc = Sort.by("theme").ascending();
+        List<LegoSet> legosets = this.legoSetRepository.findAll(sortByThemAsc);
         return legosets;
     }
 
@@ -43,4 +45,31 @@ public class LegoStoreController {
         this.legoSetRepository.deleteById(id);
     }
 
+    @GetMapping("/{id}")
+    public LegoSet byId(@PathVariable String id) {
+        LegoSet legoSet = this.legoSetRepository.findById(id).orElse(null);
+        return legoSet;
+    }
+
+    @GetMapping("/byTheme/{theme}")
+    public Collection<LegoSet> byTheme(@PathVariable String theme) {
+        Sort sortByThemAsc = Sort.by("theme").ascending();
+//        return this.legoSetRepository.findAllByThemeContaining(theme);
+        return this.legoSetRepository.findAllByThemeContaining(theme, sortByThemAsc);
+    }
+
+    @GetMapping("hardThatStartWithM")
+    public Collection<LegoSet> hardThatStartWithM() {
+        return this.legoSetRepository.findAllByDifficultyAndNameStartsWith(LegoSetDifficulty.HARD, "M");
+    }
+
+    @GetMapping("byDeliveryFeeLessThan/{price}")
+    public Collection<LegoSet> byDeliveryFeeLessThan(@PathVariable int price) {
+        return this.legoSetRepository.findAllByDeliveryPriceLessThan(price);
+    }
+
+    @GetMapping("greatReviews")
+    public Collection<LegoSet> byGreaterReview() {
+        return this.legoSetRepository.findAllByGreatReviews();
+    }
 }
