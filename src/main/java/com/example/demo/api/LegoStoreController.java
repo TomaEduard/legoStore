@@ -2,11 +2,10 @@ package com.example.demo.api;
 
 import com.example.demo.model.LegoSet;
 import com.example.demo.model.LegoSetDifficulty;
+import com.example.demo.model.QLegoSet;
 import com.example.demo.persistence.LegoSetRepository;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -33,7 +32,7 @@ public class LegoStoreController {
     }
 
     @GetMapping("/all")
-    public Collection<LegoSet> all(){
+    public Collection<LegoSet> all() {
         Sort sortByThemAsc = Sort.by("theme").ascending();
         List<LegoSet> legosets = this.legoSetRepository.findAll(sortByThemAsc);
         return legosets;
@@ -71,5 +70,21 @@ public class LegoStoreController {
     @GetMapping("greatReviews")
     public Collection<LegoSet> byGreaterReview() {
         return this.legoSetRepository.findAllByGreatReviews();
+    }
+
+    @GetMapping("bestBuys")
+    public Collection<LegoSet> bestBuys() {
+        // build query
+        QLegoSet query = new QLegoSet("query");
+        BooleanExpression inStockFilter = query.deliveryInfo.inStock.isTrue();
+        BooleanExpression smallDeliveryFeeFilter = query.deliveryInfo.deliveryFee.lt(50);
+        BooleanExpression hasGreatReviews = query.reviews.any().rating.eq(10);
+
+        BooleanExpression bestBuysFilter = inStockFilter
+                .and(smallDeliveryFeeFilter)
+                .and(hasGreatReviews);
+
+        // pass the query to findAll()
+        return (Collection<LegoSet>) this.legoSetRepository.findAll(bestBuysFilter);
     }
 }
