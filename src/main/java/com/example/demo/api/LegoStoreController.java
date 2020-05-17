@@ -6,6 +6,7 @@ import com.example.demo.model.QLegoSet;
 import com.example.demo.persistence.LegoSetRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -86,5 +87,11 @@ public class LegoStoreController {
 
         // pass the query to findAll()
         return (Collection<LegoSet>) this.legoSetRepository.findAll(bestBuysFilter);
+    }
+
+    @GetMapping("fullTextSearch/{text}")
+    public Collection<LegoSet> fullTextSearch(@PathVariable String text){
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage().matching(text);
+        return this.legoSetRepository.findAllBy(textCriteria);
     }
 }

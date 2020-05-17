@@ -3,6 +3,7 @@ package com.example.demo.persistence;
 import com.example.demo.model.LegoSet;
 import com.example.demo.model.LegoSetDifficulty;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
@@ -16,6 +17,7 @@ public interface LegoSetRepository extends MongoRepository<LegoSet, String>, Que
     Collection<LegoSet> findAllByThemeContaining(String theme);
     Collection<LegoSet> findAllByThemeContaining(String theme, Sort sort);
     Collection<LegoSet> findAllByDifficultyAndNameStartsWith(LegoSetDifficulty difficulty, String name);
+    Collection<LegoSet> findAllBy(TextCriteria textCriteria);
 
     // ?0 - first param ?1 - second param
     @Query("{'delivery.deliveryFee' : {$lt : ?0}}")

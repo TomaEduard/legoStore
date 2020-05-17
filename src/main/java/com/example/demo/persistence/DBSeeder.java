@@ -5,7 +5,6 @@ import com.example.demo.model.LegoSet;
 import com.example.demo.model.LegoSetDifficulty;
 import com.example.demo.model.ProductReview;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -15,21 +14,23 @@ import java.util.Collection;
 @Service
 public class DBSeeder implements CommandLineRunner {
 
-    private MongoTemplate mongoTemplate;
+    private LegoSetRepository legoSetRepository;
 
-    public DBSeeder(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
+    public DBSeeder(LegoSetRepository legoSetRepository) {
+        this.legoSetRepository = legoSetRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-
-        // clean de db
-        this.mongoTemplate.dropCollection(LegoSet.class);
+        this.legoSetRepository.deleteAll();
 
 
-        LegoSet milleniumFalcom = new LegoSet(
-                "Millenium Falcon",
+        /*
+        Lego Sets
+         */
+
+        LegoSet milleniumFalcon = new LegoSet(
+                "Millennium Falcon",
                 "Star Wars",
                 LegoSetDifficulty.HARD,
                 new DeliveryInfo(LocalDate.now().plusDays(1), 30, true),
@@ -55,14 +56,27 @@ public class DBSeeder implements CommandLineRunner {
                 "McLaren Senna",
                 "Speed Champions",
                 LegoSetDifficulty.EASY,
-                new DeliveryInfo(LocalDate.now().plusDays(7), 70, true),
+                new DeliveryInfo(LocalDate.now().plusDays(7), 70, false),
                 Arrays.asList(
-                        new ProductReview("Dan", 9),
-                        new ProductReview("Andrew", 9)
+                        new ProductReview("Bogdan", 9),
+                        new ProductReview("Christa", 9)
                 )
         );
 
-        Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcom, skyPolice, mcLarenSenna);
-        this.mongoTemplate.insertAll(initialProducts);
+        LegoSet mindstormsEve = new LegoSet(
+                "MINDSTORMS EV3",
+                "Mindstorms",
+                LegoSetDifficulty.HARD,
+                new DeliveryInfo(LocalDate.now().plusDays(10), 100, false),
+                Arrays.asList(
+                        new ProductReview("Cosmin", 10),
+                        new ProductReview("Jane", 9),
+                        new ProductReview("James", 10)
+                )
+        );
+
+        Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcon, mindstormsEve,mcLarenSenna,skyPolice);
+
+        this.legoSetRepository.insert(initialProducts);
     }
 }
