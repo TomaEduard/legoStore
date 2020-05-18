@@ -20,7 +20,7 @@ public class DataMigration {
                 Criteria.where("nbParts").is(null)
         );
 
-        // if conditions of priceZeroCriteria is satisfied will set value of nbParts = 122
+//         if conditions of priceZeroCriteria is satisfied will set value of nbParts = 122
         mongoTemplate.updateMulti(
                 new Query(priceZeroCriteria),
                 Update.update("nbParts", 122), LegoSet.class

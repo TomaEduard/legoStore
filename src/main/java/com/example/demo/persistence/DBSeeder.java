@@ -1,28 +1,38 @@
 package com.example.demo.persistence;
 
-import com.example.demo.model.DeliveryInfo;
-import com.example.demo.model.LegoSet;
-import com.example.demo.model.LegoSetDifficulty;
-import com.example.demo.model.ProductReview;
+import com.example.demo.model.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 
-//@Service
+@Service
 public class DBSeeder implements CommandLineRunner {
 
     private final LegoSetRepository legoSetRepository;
+    private final paymentOptionsRepository paymentOptionsRepository;
 
-    public DBSeeder(LegoSetRepository legoSetRepository) {
+    public DBSeeder(LegoSetRepository legoSetRepository, com.example.demo.persistence.paymentOptionsRepository paymentOptionsRepository) {
         this.legoSetRepository = legoSetRepository;
+        this.paymentOptionsRepository = paymentOptionsRepository;
     }
 
     @Override
     public void run(String... args) {
         this.legoSetRepository.deleteAll();
+        this.paymentOptionsRepository.deleteAll();
 
+        // Payment Options
+        PaymentOptions creditCardPayment = new PaymentOptions(PaymentType.CreditCard, 0);
+        PaymentOptions payPallPayment = new PaymentOptions(PaymentType.PayPall, 1);
+        PaymentOptions cashPayment = new PaymentOptions(PaymentType.Cash, 10);
+        this.paymentOptionsRepository.insert(creditCardPayment);
+        this.paymentOptionsRepository.insert(payPallPayment);
+        this.paymentOptionsRepository.insert(cashPayment);
+
+        // Lego Sets
         LegoSet milleniumFalcon = new LegoSet(
                 "Millennium Falcon",
                 "Star Wars",
@@ -32,10 +42,9 @@ public class DBSeeder implements CommandLineRunner {
                         new ProductReview("Dan", 7),
                         new ProductReview("Anna", 10),
                         new ProductReview("John", 8)
-                )
+                ),
+                creditCardPayment
         );
-        milleniumFalcon.setNbParts(9999);
-
 
         LegoSet skyPolice = new LegoSet(
                 "Sky Police Air Base",
@@ -45,7 +54,8 @@ public class DBSeeder implements CommandLineRunner {
                 Arrays.asList(
                         new ProductReview("Dan", 5),
                         new ProductReview("Andrew", 8)
-                )
+                ),
+                creditCardPayment
         );
 
         LegoSet mcLarenSenna = new LegoSet(
@@ -56,7 +66,8 @@ public class DBSeeder implements CommandLineRunner {
                 Arrays.asList(
                         new ProductReview("Bogdan", 9),
                         new ProductReview("Christa", 9)
-                )
+                ),
+                payPallPayment
         );
 
         LegoSet mindstormsEve = new LegoSet(
@@ -68,7 +79,8 @@ public class DBSeeder implements CommandLineRunner {
                         new ProductReview("Cosmin", 10),
                         new ProductReview("Jane", 9),
                         new ProductReview("James", 10)
-                )
+                ),
+                cashPayment
         );
 
         Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcon, mindstormsEve, mcLarenSenna, skyPolice);

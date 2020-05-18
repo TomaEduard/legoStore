@@ -14,6 +14,7 @@ import java.util.Collection;
 @Repository
 public interface LegoSetRepository extends MongoRepository<LegoSet, String>, QuerydslPredicateExecutor<LegoSet> {
 
+
     Collection<LegoSet> findAllByThemeContaining(String theme);
     Collection<LegoSet> findAllByThemeContaining(String theme, Sort sort);
     Collection<LegoSet> findAllByDifficultyAndNameStartsWith(LegoSetDifficulty difficulty, String name);
@@ -26,4 +27,7 @@ public interface LegoSetRepository extends MongoRepository<LegoSet, String>, Que
     // find by review wich with at least a review of 10
     @Query("{'reviews.rating' : {$eq : 10}}")
     Collection<LegoSet> findAllByGreatReviews();
+
+    @Query("{'paymentOptions.id' : ?0}")
+    Collection<LegoSet> findByPaymentOptionId(String id);
 }

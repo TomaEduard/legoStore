@@ -1,11 +1,11 @@
 package com.example.demo.model;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.IndexDirection;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.index.TextIndexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -33,13 +33,17 @@ public class LegoSet {
     @Field("delivery")
     private DeliveryInfo deliveryInfo;
 
+    @DBRef
+    private final PaymentOptions paymentOptions;
+
     // this annotation is required if you have multiple constructors to chose one of them
     // @PersistenceConstructor
     public LegoSet(String name,
                    String theme,
                    LegoSetDifficulty difficulty,
                    DeliveryInfo deliveryInfo,
-                   Collection<ProductReview> reviews) {
+                   Collection<ProductReview> reviews,
+                   PaymentOptions paymentOptions) {
         this.name = name;
         this.difficulty = difficulty;
         this.theme = theme;
@@ -47,6 +51,7 @@ public class LegoSet {
         if (reviews != null) {
             this.reviews = reviews;
         }
+        this.paymentOptions = paymentOptions;
     }
 
     @Transient
@@ -106,5 +111,9 @@ public class LegoSet {
 
     public void setNbParts(int nbParts) {
         this.nbParts = nbParts;
+    }
+
+    public PaymentOptions getPaymentOptions() {
+        return paymentOptions;
     }
 }
