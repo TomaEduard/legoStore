@@ -5,29 +5,23 @@ import com.example.demo.model.LegoSet;
 import com.example.demo.model.LegoSetDifficulty;
 import com.example.demo.model.ProductReview;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 
-@Service
+//@Service
 public class DBSeeder implements CommandLineRunner {
 
-    private LegoSetRepository legoSetRepository;
+    private final LegoSetRepository legoSetRepository;
 
     public DBSeeder(LegoSetRepository legoSetRepository) {
         this.legoSetRepository = legoSetRepository;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         this.legoSetRepository.deleteAll();
-
-
-        /*
-        Lego Sets
-         */
 
         LegoSet milleniumFalcon = new LegoSet(
                 "Millennium Falcon",
@@ -40,6 +34,8 @@ public class DBSeeder implements CommandLineRunner {
                         new ProductReview("John", 8)
                 )
         );
+        milleniumFalcon.setNbParts(9999);
+
 
         LegoSet skyPolice = new LegoSet(
                 "Sky Police Air Base",
@@ -75,7 +71,7 @@ public class DBSeeder implements CommandLineRunner {
                 )
         );
 
-        Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcon, mindstormsEve,mcLarenSenna,skyPolice);
+        Collection<LegoSet> initialProducts = Arrays.asList(milleniumFalcon, mindstormsEve, mcLarenSenna, skyPolice);
 
         this.legoSetRepository.insert(initialProducts);
     }

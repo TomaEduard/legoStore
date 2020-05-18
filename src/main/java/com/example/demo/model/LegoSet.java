@@ -99,4 +99,12 @@ public class LegoSet {
     public void setDeliveryInfo(DeliveryInfo deliveryInfo) {
         this.deliveryInfo = deliveryInfo;
     }
+
+    public int getNbParts() {
+        return nbParts;
+    }
+
+    public void setNbParts(int nbParts) {
+        this.nbParts = nbParts;
+    }
 }
